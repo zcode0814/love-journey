@@ -1,0 +1,360 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #ffeef8 0%, #fff5f8 50%, #ffe4ec 100%);
+    min-height: 100vh;
+    color: #5a4a5a;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+    border-radius: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: #ff69b4;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #ffb6c1, #ff69b4);
+    margin: 10px auto;
+    border-radius: 2px;
+}
+
+.love-time-section {
+    margin-bottom: 50px;
+}
+
+.love-time-card {
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: 0 15px 40px rgba(255, 182, 193, 0.2);
+    text-align: center;
+}
+
+#love-title {
+    font-size: 1.5rem;
+    color: #ff69b4;
+    margin-bottom: 30px;
+}
+
+.time-display {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.time-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+    padding: 20px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(255, 182, 193, 0.3);
+    min-width: 100px;
+}
+
+.time-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    display: block;
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.time-number.updated {
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.time-label {
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 500;
+}
+
+.milestones-section {
+    margin-bottom: 50px;
+}
+
+.milestones-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.milestone-card {
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #ffe4ec;
+}
+
+.milestone-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(255, 182, 193, 0.25);
+}
+
+.milestone-date {
+    font-size: 0.9rem;
+    color: #ff69b4;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: inline-block;
+    background: linear-gradient(135deg, #ffe4ec 0%, #ffb6c1 100%);
+    padding: 5px 15px;
+    border-radius: 15px;
+}
+
+.milestone-title {
+    font-size: 1.3rem;
+    color: #5a4a5a;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.milestone-description {
+    font-size: 1rem;
+    color: #8a7a8a;
+    line-height: 1.6;
+}
+
+.goals-section {
+    margin-bottom: 50px;
+}
+
+.goals-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.goal-card {
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #ffe4ec;
+    cursor: pointer;
+}
+
+.goal-card:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 182, 193, 0.25);
+}
+
+.goal-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.goal-title {
+    font-size: 1.1rem;
+    color: #5a4a5a;
+    font-weight: 500;
+}
+
+.map-section {
+    margin-bottom: 50px;
+}
+
+.map-container {
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(255, 182, 193, 0.2);
+}
+
+.asia-map {
+    width: 100%;
+    height: 500px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.asia-map .city-label {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ffb6c1;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5a4a5a;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.visited-cities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.visited-city-tag {
+    background: linear-gradient(135deg, #ffe4ec 0%, #ffb6c1 100%);
+    color: #5a4a5a;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.visited-city-tag:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 182, 193, 0.3);
+}
+
+.footer {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+    border-radius: 30px;
+    margin-top: 30px;
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+}
+
+.footer p {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .section-title {
+        font-size: 1.4rem;
+    }
+
+    .time-item {
+        min-width: 80px;
+        padding: 15px 20px;
+    }
+
+    .time-number {
+        font-size: 2rem;
+    }
+
+    .milestones-container {
+        grid-template-columns: 1fr;
+    }
+
+    .goals-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .goal-card {
+        padding: 20px 15px;
+    }
+
+    .goal-icon {
+        font-size: 2.5rem;
+    }
+
+    .goal-title {
+        font-size: 1rem;
+    }
+
+    .map-container {
+        padding: 20px;
+    }
+
+    .asia-map {
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    .header {
+        padding: 30px 15px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .love-time-card {
+        padding: 25px 15px;
+    }
+
+    .time-display {
+        gap: 10px;
+    }
+
+    .time-item {
+        min-width: 70px;
+        padding: 12px 15px;
+    }
+
+    .time-number {
+        font-size: 1.8rem;
+    }
+
+    .time-label {
+        font-size: 0.85rem;
+    }
+
+    .goals-container {
+        grid-template-columns: 1fr;
+    }
+
+    .milestone-card {
+        padding: 20px;
+    }
+}

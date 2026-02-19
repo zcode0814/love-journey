@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的恋爱之旅</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">💕 我们的恋爱之旅 💕</h1>
+        </header>
+
+        <section class="love-time-section">
+            <div class="love-time-card">
+                <h2 class="section-title" id="love-title">我们已经相爱</h2>
+                <div class="time-display">
+                    <div class="time-item">
+                        <span class="time-number" id="days">0</span>
+                        <span class="time-label">天</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="time-number" id="hours">0</span>
+                        <span class="time-label">时</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="time-number" id="minutes">0</span>
+                        <span class="time-label">分</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="time-number" id="seconds">0</span>
+                        <span class="time-label">秒</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="milestones-section">
+            <h2 class="section-title">🎯 恋爱里程碑</h2>
+            <div class="milestones-container" id="milestones-container">
+            </div>
+        </section>
+
+        <section class="goals-section">
+            <h2 class="section-title">✨ 新年目标</h2>
+            <div class="goals-container" id="goals-container">
+            </div>
+        </section>
+
+        <section class="map-section">
+            <h2 class="section-title">🗺️ 我们一起走过的地方</h2>
+            <div class="map-container">
+                <div id="asia-map" class="asia-map"></div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>💝 用爱记录每一个美好瞬间 💝</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
