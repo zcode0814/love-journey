@@ -37,18 +37,29 @@ const cityCoordinates = {
     '香港': { value: [114.1694, 22.3193] },
     '澳门': { value: [113.5439, 22.1987] },
     '大同': { value: [113.2950, 40.0903] },
+    '延吉': { value: [129.5130, 42.8893] },
+    '张家口': { value: [114.8869, 40.8118] },
+    '乌兰察布': { value: [113.1146, 40.9945] },
+    '都江堰': { value: [103.6175, 31.0040] },
+    '石家庄': { value: [114.5149, 38.0423] },
+    '太原': { value: [112.5492, 37.8570] },
+    '呼和浩特': { value: [111.7492, 40.8426] },
+    '南昌': { value: [115.8579, 28.6829] },
+    '银川': { value: [106.2309, 38.4872] },
+    '西宁': { value: [101.7782, 36.6171] },
+    '兰州': { value: [103.8343, 36.0611] },
     '东京': { value: [139.6503, 35.6762] },
     '首尔': { value: [126.9780, 37.5665] },
     '济州岛': { value: [126.5312, 33.3617] },
-    '曼谷': { value: [100.5018, 13.7563] },
+    // '曼谷': { value: [100.5018, 13.7563] },
     '新加坡': { value: [103.8198, 1.3521] },
-    '吉隆坡': { value: [101.6869, 3.1390] },
-    '马尼拉': { value: [120.9842, 14.5995] },
-    '河内': { value: [105.8542, 21.0285] },
-    '胡志明市': { value: [106.6297, 10.8231] },
-    '雅加达': { value: [106.8456, -6.2088] },
-    '德里': { value: [77.2090, 28.6139] },
-    '孟买': { value: [72.8777, 19.0760] },
+    // '吉隆坡': { value: [101.6869, 3.1390] },
+    // '马尼拉': { value: [120.9842, 14.5995] },
+    // '河内': { value: [105.8542, 21.0285] },
+    // '胡志明市': { value: [106.6297, 10.8231] },
+    // '雅加达': { value: [106.8456, -6.2088] },
+    // '德里': { value: [77.2090, 28.6139] },
+    // '孟买': { value: [72.8777, 19.0760] },
     '迪拜': { value: [55.2708, 25.2048] }
 };
 
@@ -109,9 +120,10 @@ function renderMilestones() {
     const container = document.getElementById('milestones-container');
     container.innerHTML = '';
 
-    config.milestones.forEach(milestone => {
+    config.milestones.forEach((milestone, index) => {
         const card = document.createElement('div');
         card.className = 'milestone-card';
+        card.style.animationDelay = `${index * 0.1}s`;
         card.innerHTML = `
             <div class="milestone-date">${formatDate(milestone.date)}</div>
             <h3 class="milestone-title">${milestone.title}</h3>
@@ -119,21 +131,52 @@ function renderMilestones() {
         `;
         container.appendChild(card);
     });
+
+    const prevBtn = document.getElementById('milestone-prev');
+    const nextBtn = document.getElementById('milestone-next');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            container.scrollBy({ left: -320, behavior: 'smooth' });
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            container.scrollBy({ left: 320, behavior: 'smooth' });
+        });
+    }
 }
 
 function renderGoals() {
     const container = document.getElementById('goals-container');
     container.innerHTML = '';
 
-    config.goals.forEach(goal => {
+    config.goals.forEach((goal, index) => {
         const card = document.createElement('div');
         card.className = 'goal-card';
+        card.style.animationDelay = `${index * 0.1}s`;
         card.innerHTML = `
             <span class="goal-icon">${goal.icon}</span>
             <h3 class="goal-title">${goal.title}</h3>
         `;
         container.appendChild(card);
     });
+
+    const prevBtn = document.getElementById('goal-prev');
+    const nextBtn = document.getElementById('goal-next');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            container.scrollBy({ left: -220, behavior: 'smooth' });
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            container.scrollBy({ left: 220, behavior: 'smooth' });
+        });
+    }
 }
 
 async function initMap() {
@@ -198,14 +241,19 @@ async function initMap() {
                 roam: true,
                 zoom: 1.2,
                 label: {
-                    show: false
+                    show: false,
+                    color: '#999',
+                    fontSize: 10
                 },
                 itemStyle: {
-                    areaColor: '#f8f0f5',
-                    borderColor: '#ffb6c1',
-                    borderWidth: 1
+                    areaColor: '#fff5f8',
+                    borderColor: '#ffd1dc',
+                    borderWidth: 1.5
                 },
                 emphasis: {
+                    label: {
+                        show: false
+                    },
                     itemStyle: {
                         areaColor: '#ffe4ec',
                         borderColor: '#ff69b4',
@@ -222,21 +270,29 @@ async function initMap() {
                     showEffectOn: 'render',
                     rippleEffect: {
                         brushType: 'stroke',
-                        scale: 3
+                        scale: 5,
+                        period: 4
                     },
                     label: {
                         formatter: '{b}',
                         position: 'right',
                         show: true,
-                        fontSize: 12,
-                        color: '#5a4a5a',
+                        fontSize: 14,
+                        color: '#ff1493',
                         fontWeight: 'bold',
-                        distance: 5
+                        distance: 8,
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        borderColor: '#ffb6c1',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        padding: [3, 6]
                     },
                     itemStyle: {
                         color: '#ff69b4',
-                        shadowBlur: 10,
-                        shadowColor: '#ff1493'
+                        shadowBlur: 20,
+                        shadowColor: '#ff1493',
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 0
                     },
                     zlevel: 1
                 },
@@ -244,19 +300,21 @@ async function initMap() {
                     type: 'scatter',
                     coordinateSystem: 'geo',
                     data: scatterData.filter(d => !d.visited),
-                    symbolSize: 8,
+                    symbolSize: 10,
                     label: {
                         formatter: '{b}',
                         position: 'right',
                         show: true,
-                        fontSize: 10,
-                        color: '#999',
+                        fontSize: 11,
+                        color: '#aaa',
                         distance: 5
                     },
                     itemStyle: {
-                        color: '#e0e0e0',
-                        borderColor: '#ccc',
-                        borderWidth: 1
+                        color: '#d0d0d0',
+                        borderColor: '#bbb',
+                        borderWidth: 1,
+                        shadowBlur: 5,
+                        shadowColor: '#ccc'
                     },
                     zlevel: 0
                 }

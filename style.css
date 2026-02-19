@@ -12,10 +12,63 @@ body {
     line-height: 1.6;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    animation: fadeIn 0.8s ease-out;
+    will-change: opacity, transform;
 }
 
 .header {
@@ -25,6 +78,8 @@ body {
     border-radius: 30px;
     margin-bottom: 30px;
     box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+    animation: slideInLeft 0.8s ease-out;
+    will-change: opacity, transform;
 }
 
 .title {
@@ -42,6 +97,8 @@ body {
     margin-bottom: 30px;
     font-weight: 600;
     position: relative;
+    animation: slideInRight 0.8s ease-out;
+    will-change: opacity, transform;
 }
 
 .section-title::after {
@@ -52,6 +109,8 @@ body {
     background: linear-gradient(90deg, #ffb6c1, #ff69b4);
     margin: 10px auto;
     border-radius: 2px;
+    animation: pulse 2s ease-in-out infinite;
+    will-change: transform;
 }
 
 .love-time-section {
@@ -88,7 +147,19 @@ body {
     border-radius: 20px;
     box-shadow: 0 8px 20px rgba(255, 182, 193, 0.3);
     min-width: 100px;
+    animation: float 3s ease-in-out infinite;
+    transition: transform 0.3s ease;
+    will-change: transform;
 }
+
+.time-item:hover {
+    transform: scale(1.1);
+}
+
+.time-item:nth-child(1) { animation-delay: 0s; }
+.time-item:nth-child(2) { animation-delay: 0.2s; }
+.time-item:nth-child(3) { animation-delay: 0.4s; }
+.time-item:nth-child(4) { animation-delay: 0.6s; }
 
 .time-number {
     font-size: 3rem;
@@ -104,12 +175,6 @@ body {
     animation: pulse 0.5s ease;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
 .time-label {
     font-size: 1rem;
     color: #fff;
@@ -120,10 +185,23 @@ body {
     margin-bottom: 50px;
 }
 
-.milestones-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.milestones-carousel {
+    position: relative;
+    padding: 0 60px;
+}
+
+.milestones-track {
+    display: flex;
     gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.milestones-track::-webkit-scrollbar {
+    display: none;
 }
 
 .milestone-card {
@@ -133,6 +211,49 @@ body {
     box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 2px solid #ffe4ec;
+    min-width: 300px;
+    max-width: 300px;
+    flex-shrink: 0;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.milestone-card:hover {
+    transform: translateY(-10px) rotate(2deg);
+    box-shadow: 0 20px 50px rgba(255, 182, 193, 0.35);
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 182, 193, 0.3);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 182, 193, 0.4);
+}
+
+.carousel-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
 }
 
 .milestone-card:hover {
@@ -168,10 +289,23 @@ body {
     margin-bottom: 50px;
 }
 
-.goals-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+.goals-carousel {
+    position: relative;
+    padding: 0 60px;
+}
+
+.goals-track {
+    display: flex;
     gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 20px 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.goals-track::-webkit-scrollbar {
+    display: none;
 }
 
 .goal-card {
@@ -183,17 +317,26 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 2px solid #ffe4ec;
     cursor: pointer;
+    min-width: 200px;
+    max-width: 200px;
+    flex-shrink: 0;
+    animation: fadeIn 0.6s ease-out;
 }
 
 .goal-card:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 40px rgba(255, 182, 193, 0.25);
+    transform: translateY(-10px) rotate(-2deg);
+    box-shadow: 0 20px 50px rgba(255, 182, 193, 0.35);
 }
 
 .goal-icon {
     font-size: 3rem;
     margin-bottom: 15px;
     display: block;
+    transition: transform 0.3s ease;
+}
+
+.goal-card:hover .goal-icon {
+    transform: scale(1.2) rotate(10deg);
 }
 
 .goal-title {
@@ -211,6 +354,7 @@ body {
     border-radius: 30px;
     padding: 30px;
     box-shadow: 0 15px 40px rgba(255, 182, 193, 0.2);
+    animation: fadeIn 0.8s ease-out;
 }
 
 .asia-map {
@@ -218,6 +362,11 @@ body {
     height: 500px;
     border-radius: 20px;
     overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.map-container:hover .asia-map {
+    transform: scale(1.01);
 }
 
 .asia-map .city-label {
@@ -261,12 +410,16 @@ body {
     border-radius: 30px;
     margin-top: 30px;
     box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+    animation: slideInRight 0.8s ease-out;
+    will-change: opacity, transform;
 }
 
 .footer p {
     color: #fff;
     font-size: 1.1rem;
     font-weight: 500;
+    animation: pulse 2s ease-in-out infinite;
+    will-change: transform;
 }
 
 @media (max-width: 768px) {
@@ -287,12 +440,18 @@ body {
         font-size: 2rem;
     }
 
-    .milestones-container {
-        grid-template-columns: 1fr;
+    .milestones-carousel {
+        padding: 0 40px;
     }
 
-    .goals-container {
-        grid-template-columns: repeat(2, 1fr);
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .goals-carousel {
+        padding: 0 40px;
     }
 
     .goal-card {
