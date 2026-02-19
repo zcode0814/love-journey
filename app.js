@@ -146,7 +146,7 @@ async function initMap() {
     myChart = echarts.init(chartDom);
 
     try {
-        const response = await fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json');
+        const response = await fetch('china-map.json');
         const geoJson = await response.json();
         
         echarts.registerMap('china', geoJson);
