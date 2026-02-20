@@ -164,12 +164,6 @@ body {
     text-align: center;
 }
 
-#love-title {
-    font-size: 1.5rem;
-    color: #ff69b4;
-    margin-bottom: 30px;
-}
-
 .time-display {
     display: flex;
     justify-content: center;
@@ -208,10 +202,6 @@ body {
     margin-bottom: 5px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-}
-
-.time-number.updated {
-    animation: pulse 0.5s ease;
 }
 
 .time-label {
@@ -406,40 +396,6 @@ body {
 
 .map-container:hover .asia-map {
     transform: scale(1.01);
-}
-
-.asia-map .city-label {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ffb6c1;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #5a4a5a;
-    white-space: nowrap;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.visited-cities-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-}
-
-.visited-city-tag {
-    background: linear-gradient(135deg, #ffe4ec 0%, #ffb6c1 100%);
-    color: #5a4a5a;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.visited-city-tag:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(255, 182, 193, 0.3);
 }
 
 .footer {
