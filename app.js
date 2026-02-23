@@ -53,7 +53,8 @@ const cityCoordinates = {
     '济州岛': { value: [126.5312, 33.3617] },
     // '曼谷': { value: [100.5018, 13.7563] },
     '新加坡': { value: [103.8198, 1.3521] },
-    // '吉隆坡': { value: [101.6869, 3.1390] },
+    '吉隆坡': { value: [101.6869, 3.1390] },
+    '马累': { value: [73.5, 4.2] },
     // '马尼拉': { value: [120.9842, 14.5995] },
     // '河内': { value: [105.8542, 21.0285] },
     // '胡志明市': { value: [106.6297, 10.8231] },
@@ -79,6 +80,30 @@ function initializeApp() {
     renderGoals();
     initMap();
     startTimer();
+    initMusic();
+}
+
+function initMusic() {
+    const music = document.getElementById('bg-music');
+    const musicControl = document.getElementById('music-control');
+    
+    if (!music || !musicControl) return;
+    
+    musicControl.addEventListener('click', () => {
+        if (music.paused) {
+            music.play();
+            musicControl.classList.add('playing');
+        } else {
+            music.pause();
+            musicControl.classList.remove('playing');
+        }
+    });
+    
+    music.addEventListener('ended', () => {
+        musicControl.classList.remove('playing');
+    });
+    
+    music.volume = 0.5;
 }
 
 function updateLoveTime() {
@@ -124,10 +149,16 @@ function renderMilestones() {
         const card = document.createElement('div');
         card.className = 'milestone-card';
         card.style.animationDelay = `${index * 0.1}s`;
+        
+        const imageUrl = milestone.image || 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop';
+
+        // <img src="${imageUrl}" alt="${milestone.title}" class="milestone-image" loading="lazy">
         card.innerHTML = `
-            <div class="milestone-date">${formatDate(milestone.date)}</div>
-            <h3 class="milestone-title">${milestone.title}</h3>
-            <p class="milestone-description">${milestone.description}</p>
+            <div class="milestone-content">
+                <div class="milestone-date">${formatDate(milestone.date)}</div>
+                <h3 class="milestone-title">${milestone.title}</h3>
+                <p class="milestone-description">${milestone.description}</p>
+            </div>
         `;
         container.appendChild(card);
     });
