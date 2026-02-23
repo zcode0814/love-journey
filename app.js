@@ -89,7 +89,30 @@ function initMusic() {
     
     if (!music || !musicControl) return;
     
-    musicControl.addEventListener('click', () => {
+    let hasInteracted = false;
+    
+    const playMusic = () => {
+        if (music.paused) {
+            const playPromise = music.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    musicControl.classList.add('playing');
+                    hasInteracted = true;
+                }).catch(error => {
+                    console.log('自动播放被阻止:', error);
+                });
+            }
+        }
+    };
+    
+    const tryAutoPlay = () => {
+        if (!hasInteracted) {
+            playMusic();
+        }
+    };
+    
+    musicControl.addEventListener('click', (e) => {
+        e.stopPropagation();
         if (music.paused) {
             music.play();
             musicControl.classList.add('playing');
@@ -97,6 +120,21 @@ function initMusic() {
             music.pause();
             musicControl.classList.remove('playing');
         }
+    });
+    
+    document.addEventListener('click', tryAutoPlay, { once: true });
+    document.addEventListener('touchstart', tryAutoPlay, { once: true });
+    document.addEventListener('touchend', tryAutoPlay, { once: true });
+    document.addEventListener('scroll', tryAutoPlay, { once: true });
+    
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && !hasInteracted) {
+            setTimeout(tryAutoPlay, 500);
+        }
+    });
+    
+    window.addEventListener('load', () => {
+        setTimeout(tryAutoPlay, 100);
     });
     
     music.addEventListener('ended', () => {
