@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按摩券管理</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(255, 182, 193, 0.2);
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            color: #ff69b4;
+            margin-bottom: 30px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #ffe4ec;
+            border-radius: 15px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-input:focus {
+            border-color: #ff69b4;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%);
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-title {
+            font-size: 1.5rem;
+            color: #ff69b4;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #fff;
+            border: 2px solid #ffe4ec;
+            border-radius: 10px;
+            color: #5a4a5a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: #ff69b4;
+            color: #ff69b4;
+        }
+
+        .issue-card {
+            background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .issue-title {
+            font-size: 1.2rem;
+            color: #5a4a5a;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5a4a5a;
+            font-weight: 500;
+        }
+
+        .form-select, .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ffe4ec;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-select:focus, .form-input:focus {
+            border-color: #ff69b4;
+        }
+
+        .issue-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%);
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .issue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+        }
+
+        .issue-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 15px;
+            background: rgba(255, 228, 236, 0.5);
+            border-radius: 15px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff69b4;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8a7a8a;
+            margin-top: 5px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="login-card" id="login-card">
+            <h1 class="login-title">🔐 管理员登录</h1>
+            <input type="password" class="login-input" id="passcode-input" placeholder="请输入管理口令">
+            <button class="login-btn" id="login-btn">进入管理</button>
+            <p id="login-error" style="color: #ff69b4; margin-top: 15px; display: none;">口令错误，请重试</p>
+        </div>
+
+        <div class="admin-panel" id="admin-panel">
+            <div class="admin-header">
+                <h1 class="admin-title">💆 按摩券管理</h1>
+                <button class="logout-btn" id="logout-btn">退出</button>
+            </div>
+
+            <div class="message" id="message"></div>
+
+            <div class="issue-card">
+                <h2 class="issue-title">发放新按摩券</h2>
+                <div class="form-group">
+                    <label class="form-label">按摩时长</label>
+                    <select class="form-select" id="duration-select">
+                        <option value="5">5 分钟</option>
+                        <option value="10">10 分钟</option>
+                        <option value="20">20 分钟</option>
+                        <option value="30">30 分钟</option>
+                        <option value="60">60 分钟</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">券标题（可选）</label>
+                    <input type="text" class="form-input" id="title-input" placeholder="默认：按摩券">
+                </div>
+                <button class="issue-btn" id="issue-btn">发放按摩券</button>
+            </div>
+
+            <div class="stats-card">
+                <h2 class="issue-title">统计数据</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="total-count">0</div>
+                        <div class="stat-label">总券数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="available-count">0</div>
+                        <div class="stat-label">未使用</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="used-count">0</div>
+                        <div class="stat-label">已使用</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js"></script>
+    <script src="oss-config.js"></script>
+    <script src="oss-utils.js"></script>
+    <script>
+        let isLoggedIn = false;
+
+        document.getElementById('login-btn').addEventListener('click', handleLogin);
+        document.getElementById('passcode-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('logout-btn').addEventListener('click', handleLogout);
+        document.getElementById('issue-btn').addEventListener('click', handleIssue);
+
+        function handleLogin() {
+            const passcode = document.getElementById('passcode-input').value;
+            
+            // 如果 OSS 未配置，使用默认口令
+            let isValid = false;
+            if (typeof verifyPasscode === 'function') {
+                isValid = verifyPasscode(passcode);
+            } else {
+                isValid = passcode === '123456';
+            }
+            
+            if (isValid) {
+                isLoggedIn = true;
+                document.getElementById('login-card').style.display = 'none';
+                document.getElementById('admin-panel').classList.add('active');
+                document.getElementById('login-error').style.display = 'none';
+                loadStats();
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function handleLogout() {
+            isLoggedIn = false;
+            document.getElementById('passcode-input').value = '';
+            document.getElementById('login-card').style.display = 'block';
+            document.getElementById('admin-panel').classList.remove('active');
+        }
+
+        async function loadStats() {
+            try {
+                const config = await loadConfigFromOSS();
+                const coupons = config.massageCoupons || [];
+                
+                const total = coupons.length;
+                const available = coupons.filter(c => c.status === 'available').length;
+                const used = coupons.filter(c => c.status === 'used').length;
+                
+                document.getElementById('total-count').textContent = total;
+                document.getElementById('available-count').textContent = available;
+                document.getElementById('used-count').textContent = used;
+            } catch (error) {
+                showMessage('加载统计数据失败: ' + error.message, 'error');
+            }
+        }
+
+        async function handleIssue() {
+            const duration = parseInt(document.getElementById('duration-select').value);
+            const title = document.getElementById('title-input').value || '按摩券';
+            
+            const issueBtn = document.getElementById('issue-btn');
+            issueBtn.disabled = true;
+            issueBtn.textContent = '发放中...';
+
+            try {
+                const coupon = {
+                    icon: '💆',
+                    title: title,
+                    duration: duration,
+                    durationUnit: '分钟'
+                };
+                
+                await addMassageCoupon(coupon);
+                showMessage(`按摩券发放成功！时长：${duration}分钟`, 'success');
+                document.getElementById('title-input').value = '';
+                loadStats();
+            } catch (error) {
+                showMessage('发放失败: ' + error.message, 'error');
+            } finally {
+                issueBtn.disabled = false;
+                issueBtn.textContent = '发放按摩券';
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = 'message ' + type;
+            
+            setTimeout(() => {
+                messageEl.className = 'message';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

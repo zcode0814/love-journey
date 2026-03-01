@@ -66,11 +66,38 @@ const cityCoordinates = {
 
 async function loadConfig() {
     try {
-        const response = await fetch('config.json');
-        config = await response.json();
+        // 优先从 OSS 读取配置
+        if (typeof OSS_CONFIG !== 'undefined' && OSS_CONFIG.bucket !== 'your-bucket-name') {
+            console.log('从 OSS 加载配置...');
+            config = await loadConfigFromOSS();
+        } else {
+            console.log('从本地加载配置...');
+            const response = await fetch('config.json');
+            config = await response.json();
+        }
+        
+        // 立即加载按摩券数据
+        if (config.massageCoupons) {
+            massageCouponsData = config.massageCoupons;
+            console.log('按摩券数据已加载:', massageCouponsData.length, '张');
+        } else {
+            console.log('配置中没有按摩券数据');
+        }
+        
         initializeApp();
     } catch (error) {
         console.error('加载配置文件失败:', error);
+        // 回退到本地配置
+        try {
+            const response = await fetch('config.json');
+            config = await response.json();
+            if (config.massageCoupons) {
+                massageCouponsData = config.massageCoupons;
+            }
+            initializeApp();
+        } catch (fallbackError) {
+            console.error('回退加载也失败:', fallbackError);
+        }
     }
 }
 
@@ -401,12 +428,283 @@ async function initMap() {
     }
 }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
+function formatDate(dateString, showTime = true) {
+    const date = new Date(dateString.replace(/-/g, '/'));
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}年${month}月${day}日`;
+    
+    if (!showTime) {
+        return `${year}年${month}月${day}日`;
+    }
+    
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-document.addEventListener('DOMContentLoaded', loadConfig);
+let massageCouponsData = [];
+
+function initMenu() {
+    const menuControl = document.getElementById('menu-control');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const menuClose = document.getElementById('menu-close');
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    if (menuControl) {
+        menuControl.addEventListener('click', () => {
+            menuOverlay.classList.add('active');
+        });
+    }
+
+    if (menuClose) {
+        menuClose.addEventListener('click', () => {
+            menuOverlay.classList.remove('active');
+        });
+    }
+
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', (e) => {
+            if (e.target === menuOverlay) {
+                menuOverlay.classList.remove('active');
+            }
+        });
+    }
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = item.dataset.page;
+            switchPage(page);
+            
+            menuItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            
+            menuOverlay.classList.remove('active');
+        });
+    });
+}
+
+function switchPage(page) {
+    const homePage = document.getElementById('page-home');
+    const couponsPage = document.getElementById('page-coupons');
+
+    if (page === 'home') {
+        homePage.classList.remove('page-hidden');
+        couponsPage.classList.add('page-hidden');
+    } else if (page === 'coupons') {
+        homePage.classList.add('page-hidden');
+        couponsPage.classList.remove('page-hidden');
+        renderCoupons();
+    }
+}
+
+let currentFilter = 'all';
+let qrCodeInstance = null;
+
+function initTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn:not(.refresh-btn)');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderCoupons();
+        });
+    });
+
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', async () => {
+            refreshBtn.textContent = '🔄 刷新中...';
+            refreshBtn.disabled = true;
+            
+            try {
+                await loadConfig();
+                renderCoupons();
+                refreshBtn.textContent = '🔄 已刷新';
+                setTimeout(() => {
+                    refreshBtn.textContent = '🔄 刷新';
+                    refreshBtn.disabled = false;
+                }, 1000);
+            } catch (error) {
+                refreshBtn.textContent = '🔄 刷新失败';
+                setTimeout(() => {
+                    refreshBtn.textContent = '🔄 刷新';
+                    refreshBtn.disabled = false;
+                }, 1000);
+            }
+        });
+    }
+}
+
+function initQRModal() {
+    const qrModal = document.getElementById('qr-modal');
+    const qrModalClose = document.getElementById('qr-modal-close');
+
+    if (qrModalClose) {
+        qrModalClose.addEventListener('click', closeQRModal);
+    }
+
+    if (qrModal) {
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) {
+                closeQRModal();
+            }
+        });
+    }
+}
+
+function openQRModal(coupon) {
+    const qrModal = document.getElementById('qr-modal');
+    const qrCodeContainer = document.getElementById('qr-code');
+
+    if (!qrModal || !qrCodeContainer) return;
+
+    qrCodeContainer.innerHTML = '';
+
+    // 校验券是否已被使用
+    if (coupon.status === 'used') {
+        alert('该按摩券已被使用，无法重复使用');
+        return;
+    }
+
+    // 生成核销页面 URL
+    const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+    const useUrl = `${baseUrl}/use.html?id=${coupon.id}`;
+    
+    console.log('核销链接:', useUrl);
+
+    try {
+        if (typeof QRCode !== 'undefined') {
+            qrCodeInstance = new QRCode(qrCodeContainer, {
+                text: useUrl,
+                width: 170,
+                height: 170,
+                colorDark: '#ff69b4',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        } else {
+            qrCodeContainer.innerHTML = '<div style="color: #999;">二维码加载失败</div>';
+        }
+    } catch (error) {
+        console.error('二维码生成失败:', error);
+        qrCodeContainer.innerHTML = '<div style="color: #999;">二维码生成失败</div>';
+    }
+
+    qrModal.classList.add('active');
+}
+
+function closeQRModal() {
+    const qrModal = document.getElementById('qr-modal');
+    if (qrModal) {
+        qrModal.classList.remove('active');
+    }
+}
+
+function renderCoupons() {
+    const container = document.getElementById('coupons-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (!massageCouponsData || massageCouponsData.length === 0) {
+        console.log('按摩券数据为空，尝试从配置加载');
+        if (config.massageCoupons) {
+            massageCouponsData = config.massageCoupons;
+        }
+    }
+
+    if (massageCouponsData.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">暂无按摩券数据</div>';
+        return;
+    }
+
+    const filteredCoupons = massageCouponsData.filter(coupon => {
+        if (currentFilter === 'all') return true;
+        return coupon.status === currentFilter;
+    });
+
+    if (filteredCoupons.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">该分类下暂无按摩券</div>';
+        return;
+    }
+
+    filteredCoupons.forEach((coupon, index) => {
+        const card = document.createElement('div');
+        card.className = `coupon-card ${coupon.status}`;
+        card.style.animationDelay = `${index * 0.1}s`;
+
+        const statusText = coupon.status === 'available' ? '立即使用' : '已使用';
+        const statusClass = coupon.status === 'available' ? 'available' : 'used';
+
+        card.innerHTML = `
+            <div class="coupon-card-header">
+                <span class="coupon-number">NO.${String(coupon.id).padStart(3, '0')}</span>
+                <button class="coupon-status ${statusClass}" data-coupon-id="${coupon.id}">${statusText}</button>
+            </div>
+            <div class="coupon-main">
+                <span class="coupon-icon">${coupon.icon}</span>
+                <div class="coupon-content">
+                    <h3 class="coupon-title">${coupon.title}</h3>
+                    <div class="coupon-meta">
+                        <span class="coupon-duration">${coupon.duration}${coupon.durationUnit}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="coupon-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot ${coupon.status === 'available' ? 'active' : ''}"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-label">获取时间</span>
+                        <span class="timeline-time">${formatDate(coupon.acquiredDate)}</span>
+                    </div>
+                </div>
+                ${coupon.usedDate ? `
+                <div class="timeline-item">
+                    <div class="timeline-dot used"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-label">使用时间</span>
+                        <span class="timeline-time">${formatDate(coupon.usedDate)}</span>
+                    </div>
+                </div>
+                ` : `
+                <div class="timeline-item pending">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-label">等待使用</span>
+                        <span class="timeline-time">-</span>
+                    </div>
+                </div>
+                `}
+            </div>
+            <div class="coupon-stamp">
+                <span class="coupon-stamp-text">已使用</span>
+            </div>
+        `;
+
+        const statusBtn = card.querySelector('.coupon-status');
+        if (statusBtn && coupon.status === 'available') {
+            statusBtn.addEventListener('click', () => {
+                // 再次检查最新状态，防止并发问题
+                if (coupon.status === 'used') {
+                    alert('该按摩券已被使用，无法重复使用');
+                    return;
+                }
+                openQRModal(coupon);
+            });
+        }
+
+        container.appendChild(card);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadConfig();
+    initMenu();
+    initTabs();
+    initQRModal();
+});

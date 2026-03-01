@@ -10,7 +10,7 @@
   "milestones": [
     {
       "date": "2020-12-20",
-      "title": " 相爱",
+      "title": "相爱12",
       "description": "只是因为在人群中多看了你一眼",
       "image": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop"
     },
@@ -322,6 +322,68 @@
       "name": "澳门",
       "date": "2026-01-15",
       "description": "威尼斯人、美高梅、新葡京"
+    }
+  ],
+  "massageCoupons": [
+    {
+      "id": 1,
+      "icon": "💆",
+      "title": "按摩券",
+      "duration": 5,
+      "durationUnit": "分钟",
+      "acquiredDate": "2024-02-14 10:30:25",
+      "usedDate": null,
+      "status": "available"
+    },
+    {
+      "id": 2,
+      "icon": "💆",
+      "title": "按摩券",
+      "duration": 10,
+      "durationUnit": "分钟",
+      "acquiredDate": "2024-03-08 14:22:18",
+      "usedDate": "2024-03-15 20:15:42",
+      "status": "used"
+    },
+    {
+      "id": 3,
+      "icon": "💆",
+      "title": "按摩券",
+      "duration": 20,
+      "durationUnit": "分钟",
+      "acquiredDate": "2024-05-20 09:45:33",
+      "usedDate": null,
+      "status": "available"
+    },
+    {
+      "id": 4,
+      "icon": "💆",
+      "title": "按摩券",
+      "duration": 5,
+      "durationUnit": "分钟",
+      "acquiredDate": "2024-08-14 16:18:09",
+      "usedDate": null,
+      "status": "available"
+    },
+    {
+      "id": 5,
+      "icon": "💆",
+      "title": "按摩券",
+      "duration": 10,
+      "durationUnit": "分钟",
+      "acquiredDate": "2024-12-20 11:05:57",
+      "usedDate": "2024-12-25 19:30:12",
+      "status": "used"
+    },
+    {
+      "id": 6,
+      "icon": "💆",
+      "title": "按摩券",
+      "duration": 20,
+      "durationUnit": "分钟",
+      "acquiredDate": "2025-02-14 08:20:45",
+      "usedDate": null,
+      "status": "available"
     }
   ]
 }

@@ -15,7 +15,21 @@
         <span class="music-icon">🎵</span>
     </div>
     
-    <div class="container">
+    <div class="menu-control" id="menu-control">
+        <span class="menu-icon">☰</span>
+    </div>
+    
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="menu-content">
+            <button class="menu-close" id="menu-close">✕</button>
+            <nav class="menu-nav">
+                <a href="#" class="menu-item active" data-page="home">🏠 首页</a>
+                <a href="#" class="menu-item" data-page="coupons">💝 恋爱券</a>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="container" id="page-home">
         <!-- <header class="header">
             <h1 class="title">执子之手，与子偕老</h1>
         </header> -->
@@ -77,7 +91,36 @@
         </footer> -->
     </div>
 
+    </div>
+    
+    <div class="container page-hidden" id="page-coupons">
+        <section class="coupons-section">
+            <h2 class="section-title">💝 恋爱券</h2>
+            <div class="coupons-tabs">
+                <button class="tab-btn active" data-filter="all">全部</button>
+                <button class="tab-btn" data-filter="available">未使用</button>
+                <button class="tab-btn" data-filter="used">已使用</button>
+                <button class="tab-btn refresh-btn" id="refresh-btn">🔄 刷新</button>
+            </div>
+            <div class="coupons-container" id="coupons-container">
+            </div>
+        </section>
+    </div>
+
+    <div class="qr-modal" id="qr-modal">
+        <div class="qr-modal-content">
+            <button class="qr-modal-close" id="qr-modal-close">✕</button>
+            <h3 class="qr-modal-title">扫码使用按摩券</h3>
+            <div class="qr-code" id="qr-code"></div>
+            <p class="qr-modal-desc">请扫描二维码使用此券</p>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js"></script>
+    <script src="oss-config.js"></script>
+    <script src="oss-utils.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

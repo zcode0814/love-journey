@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按摩券核销</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .use-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .use-card {
+            background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(255, 182, 193, 0.2);
+            text-align: center;
+            width: 100%;
+        }
+
+        .use-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .use-title {
+            font-size: 1.5rem;
+            color: #5a4a5a;
+            margin-bottom: 10px;
+        }
+
+        .use-duration {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ff69b4;
+            margin-bottom: 30px;
+        }
+
+        .use-info {
+            background: rgba(255, 228, 236, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .use-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .use-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .use-info-label {
+            color: #8a7a8a;
+        }
+
+        .use-info-value {
+            color: #5a4a5a;
+            font-weight: 500;
+        }
+
+        .use-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%);
+            border: none;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .use-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+        }
+
+        .use-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .use-btn.success {
+            background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .status-badge.available {
+            background: linear-gradient(135deg, #90EE90 0%, #32CD32 100%);
+            color: #fff;
+        }
+
+        .status-badge.used {
+            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+            color: #fff;
+        }
+
+        .error-card {
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            color: #5a4a5a;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            color: #8a7a8a;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+            border-radius: 25px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #ffe4ec;
+            border-top-color: #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="use-container">
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p style="color: #8a7a8a;">加载中...</p>
+        </div>
+
+        <div id="use-card" class="use-card" style="display: none;">
+            <div class="use-icon">💆</div>
+            <span class="status-badge available" id="status-badge">未使用</span>
+            <h1 class="use-title" id="coupon-title">按摩券</h1>
+            <div class="use-duration" id="coupon-duration">10分钟</div>
+            
+            <div class="use-info">
+                <div class="use-info-item">
+                    <span class="use-info-label">券编号</span>
+                    <span class="use-info-value" id="coupon-id">-</span>
+                </div>
+                <div class="use-info-item">
+                    <span class="use-info-label">获取时间</span>
+                    <span class="use-info-value" id="coupon-acquired">-</span>
+                </div>
+            </div>
+
+            <button class="use-btn" id="use-btn">确认使用</button>
+        </div>
+
+        <div id="used-card" class="use-card" style="display: none;">
+            <div class="use-icon">✅</div>
+            <h1 class="use-title">按摩券已使用</h1>
+            <div class="use-duration" id="used-duration">10分钟</div>
+            <div class="use-info">
+                <div class="use-info-item">
+                    <span class="use-info-label">使用时间</span>
+                    <span class="use-info-value" id="used-date">-</span>
+                </div>
+            </div>
+            <a href="index.html" class="back-link">返回首页</a>
+        </div>
+
+        <div id="error-card" class="use-card error-card" style="display: none;">
+            <div class="error-icon">❌</div>
+            <h1 class="error-title">出错了</h1>
+            <p class="error-message" id="error-message">无效的按摩券</p>
+            <a href="index.html" class="back-link">返回首页</a>
+        </div>
+    </div>
+
+    <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js"></script>
+    <script src="oss-config.js"></script>
+    <script src="oss-utils.js"></script>
+    <script>
+        let currentCouponId = null;
+
+        document.getElementById('use-btn').addEventListener('click', handleUse);
+
+        async function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const couponId = parseInt(urlParams.get('id'));
+            
+            if (!couponId) {
+                showError('无效的按摩券链接');
+                return;
+            }
+
+            currentCouponId = couponId;
+
+            try {
+                const config = await loadConfigFromOSS();
+                const coupon = config.massageCoupons.find(c => c.id === couponId);
+
+                if (!coupon) {
+                    showError('找不到该按摩券');
+                    return;
+                }
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (coupon.status === 'used') {
+                    showUsed(coupon);
+                } else {
+                    showCoupon(coupon);
+                }
+            } catch (error) {
+                showError('加载失败: ' + error.message);
+            }
+        }
+
+        function showCoupon(coupon) {
+            document.getElementById('use-card').style.display = 'block';
+            document.getElementById('coupon-title').textContent = coupon.title;
+            document.getElementById('coupon-duration').textContent = coupon.duration + coupon.durationUnit;
+            document.getElementById('coupon-id').textContent = '#' + coupon.id;
+            document.getElementById('coupon-acquired').textContent = formatDate(coupon.acquiredDate);
+        }
+
+        function showUsed(coupon) {
+            document.getElementById('used-card').style.display = 'block';
+            document.getElementById('used-duration').textContent = coupon.duration + coupon.durationUnit;
+            document.getElementById('used-date').textContent = formatDate(coupon.usedDate);
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error-card').style.display = 'block';
+            document.getElementById('error-message').textContent = message;
+        }
+
+        async function handleUse() {
+            const useBtn = document.getElementById('use-btn');
+            useBtn.disabled = true;
+            useBtn.textContent = '核销中...';
+
+            try {
+                const coupon = await useMassageCoupon(currentCouponId);
+                
+                document.getElementById('use-card').style.display = 'none';
+                showUsed(coupon);
+            } catch (error) {
+                useBtn.disabled = false;
+                useBtn.textContent = '确认使用';
+                alert('核销失败: ' + error.message);
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+        }
+
+        init();
+    </script>
+</body>
+</html>

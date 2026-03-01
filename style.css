@@ -35,6 +35,128 @@ body {
     box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
 }
 
+.menu-control {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.9) 0%, rgba(255, 105, 180, 0.9) 100%);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.menu-control:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+}
+
+.menu-icon {
+    font-size: 24px;
+    color: #fff;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background: linear-gradient(180deg, #fff5f8 0%, #ffeef8 100%);
+    padding: 60px 30px 30px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 5px 0 30px rgba(255, 105, 180, 0.2);
+}
+
+.menu-overlay.active .menu-content {
+    transform: translateX(0);
+}
+
+.menu-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #ff69b4;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.menu-close:hover {
+    background: rgba(255, 105, 180, 0.1);
+}
+
+.menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 15px;
+    text-decoration: none;
+    color: #5a4a5a;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 2px solid #ffe4ec;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.15);
+}
+
+.menu-item:hover {
+    transform: translateX(10px);
+    box-shadow: 0 6px 20px rgba(255, 182, 193, 0.25);
+    border-color: #ffb6c1;
+}
+
+.menu-item.active {
+    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+    color: #fff;
+    border-color: #ff69b4;
+}
+
+.page-hidden {
+    display: none;
+}
+
 .music-icon {
     font-size: 24px;
     animation: pulse 2s ease-in-out infinite;
@@ -484,12 +606,12 @@ body {
     }
 
     .time-item {
-        min-width: 80px;
-        padding: 15px 20px;
+        min-width: 70px;
+        padding: 12px 15px;
     }
 
     .time-number {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
     .milestones-carousel {
@@ -523,8 +645,456 @@ body {
     }
 
     .asia-map {
-        height: 400px;
+        height: 350px;
     }
+
+    .coupons-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    .coupon-card {
+        padding: 20px;
+    }
+
+    .coupon-icon {
+        font-size: 2.5rem;
+    }
+
+    .coupon-title {
+        font-size: 1.2rem;
+    }
+
+    .coupon-duration {
+        font-size: 0.9rem;
+        padding: 3px 10px;
+    }
+
+    .coupon-status {
+        padding: 4px 12px;
+        font-size: 0.8rem;
+    }
+
+    .coupon-info-item {
+        padding: 8px 12px;
+    }
+
+    .coupon-info-label,
+    .coupon-info-value {
+        font-size: 0.85rem;
+    }
+
+    .menu-content {
+        width: 260px;
+        padding: 50px 20px 20px;
+    }
+
+    .menu-item {
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+
+    .music-control,
+    .menu-control {
+        width: 45px;
+        height: 45px;
+    }
+
+    .music-icon,
+    .menu-icon {
+        font-size: 20px;
+    }
+}
+
+.coupons-section {
+    margin-bottom: 50px;
+}
+
+.coupons-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.coupons-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.coupon-card {
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #ffe4ec;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.coupon-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(255, 182, 193, 0.35);
+}
+
+.coupon-card.used {
+    opacity: 0.85;
+}
+
+.coupon-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #ffe4ec 0%, #fff0f5 100%);
+    border-bottom: 1px solid #ffd1dc;
+}
+
+.coupon-number {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ff69b4;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 12px;
+    border-radius: 15px;
+    letter-spacing: 1px;
+}
+
+.coupon-main {
+    display: flex;
+    align-items: center;
+    padding: 25px 20px;
+    gap: 15px;
+}
+
+.coupon-icon {
+    font-size: 3.5rem;
+    flex-shrink: 0;
+}
+
+.coupon-content {
+    flex: 1;
+}
+
+.coupon-title {
+    font-size: 1.5rem;
+    color: #5a4a5a;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.coupon-card.used .coupon-title {
+    color: #999;
+}
+
+.coupon-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.coupon-duration {
+    font-size: 1.1rem;
+    color: #ff69b4;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffe4ec 0%, #ffb6c1 100%);
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+
+.coupon-card.used .coupon-duration {
+    color: #999;
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+}
+
+.coupon-timeline {
+    padding: 0 20px 20px;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed #ffe4ec;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-item.pending {
+    opacity: 0.6;
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    border: 2px solid #ccc;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.timeline-dot.active {
+    background: #90EE90;
+    border-color: #32CD32;
+    box-shadow: 0 0 8px rgba(144, 238, 144, 0.6);
+}
+
+.timeline-dot.used {
+    background: #ff69b4;
+    border-color: #ff1493;
+    box-shadow: 0 0 8px rgba(255, 105, 180, 0.6);
+}
+
+.timeline-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.timeline-label {
+    font-size: 0.85rem;
+    color: #8a7a8a;
+    font-weight: 500;
+}
+
+.timeline-time {
+    font-size: 0.95rem;
+    color: #5a4a5a;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+}
+
+.coupon-card.used .timeline-time {
+    color: #999;
+}
+
+.coupon-status {
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.coupon-status.available {
+    background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+.coupon-status.available:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+.coupon-status.available:active {
+    transform: scale(0.98);
+}
+
+.coupon-status.used {
+    background: linear-gradient(135deg, #ccc 0%, #999 100%);
+    color: #fff;
+    cursor: default;
+}
+
+.coupon-stamp {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+    border: 3px solid #ff69b4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-30deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.coupon-card.used .coupon-stamp {
+    opacity: 0.3;
+}
+
+.coupon-stamp-text {
+    font-size: 1rem;
+    color: #ff69b4;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.tab-btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border: 2px solid #ffe4ec;
+    border-radius: 25px;
+    color: #5a4a5a;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 182, 193, 0.15);
+}
+
+.tab-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 182, 193, 0.25);
+    border-color: #ffb6c1;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+    color: #fff;
+    border-color: #ff69b4;
+}
+
+.refresh-btn {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-color: #a5d6a7;
+}
+
+.refresh-btn:hover {
+    border-color: #66bb6a;
+}
+
+.qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.qr-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.qr-modal-content {
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 30px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    max-width: 90%;
+    width: 350px;
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+    border: 3px solid #ffe4ec;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.qr-modal.active .qr-modal-content {
+    transform: scale(1);
+}
+
+.qr-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #ff69b4;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.qr-modal-close:hover {
+    background: rgba(255, 105, 180, 0.1);
+}
+
+.qr-modal-title {
+    font-size: 1.4rem;
+    color: #5a4a5a;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.qr-code {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-code img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.qr-modal-desc {
+    font-size: 1rem;
+    color: #8a7a8a;
+}
+
+.coupons-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.coupon-card {
+    background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #ffe4ec;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.coupon-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(255, 182, 193, 0.35);
+}
+
+.coupon-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #ffb6c1, #ff69b4);
 }
 
 @media (max-width: 480px) {
@@ -567,5 +1137,140 @@ body {
 
     .milestone-card {
         padding: 20px;
+    }
+
+    .coupons-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    .coupon-card {
+        border-radius: 15px;
+    }
+
+    .coupon-card-header {
+        padding: 12px 15px;
+    }
+
+    .coupon-number {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+    }
+
+    .coupon-main {
+        padding: 18px 15px;
+        gap: 12px;
+    }
+
+    .coupon-icon {
+        font-size: 2.5rem;
+    }
+
+    .coupon-title {
+        font-size: 1.2rem;
+    }
+
+    .coupon-duration {
+        font-size: 0.9rem;
+        padding: 4px 12px;
+    }
+
+    .coupon-status {
+        padding: 6px 14px;
+        font-size: 0.8rem;
+    }
+
+    .coupon-timeline {
+        padding: 0 15px 15px;
+    }
+
+    .timeline-item {
+        padding: 10px 0;
+        gap: 10px;
+    }
+
+    .timeline-dot {
+        width: 10px;
+        height: 10px;
+    }
+
+    .timeline-label {
+        font-size: 0.8rem;
+    }
+
+    .timeline-time {
+        font-size: 0.85rem;
+    }
+
+    .coupon-stamp {
+        width: 60px;
+        height: 60px;
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .coupon-stamp-text {
+        font-size: 0.8rem;
+    }
+
+    .coupons-tabs {
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .tab-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .qr-modal-content {
+        padding: 30px 20px;
+        width: 300px;
+    }
+
+    .qr-modal-title {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .qr-code {
+        width: 160px;
+        height: 160px;
+        padding: 10px;
+    }
+
+    .qr-modal-desc {
+        font-size: 0.9rem;
+    }
+
+    .menu-content {
+        width: 240px;
+        padding: 45px 15px 15px;
+    }
+
+    .menu-item {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+
+    .menu-close {
+        top: 15px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
+    }
+
+    .music-control,
+    .menu-control {
+        width: 40px;
+        height: 40px;
+        top: 15px;
+    }
+
+    .music-icon,
+    .menu-icon {
+        font-size: 18px;
     }
 }
