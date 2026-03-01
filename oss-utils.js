@@ -7,8 +7,8 @@ function initOSS() {
   }
   
   if (!ossClient) {
-    const decryptedAccessKeyId = CryptoUtils.decrypt(OSS_CONFIG.accessKeyId);
-    const decryptedAccessKeySecret = CryptoUtils.decrypt(OSS_CONFIG.accessKeySecret);
+    const decryptedAccessKeyId = CryptoUtils.decrypt(OSS_CONFIG.ak);
+    const decryptedAccessKeySecret = CryptoUtils.decrypt(OSS_CONFIG.sk);
     
     ossClient = new OSS({
       region: OSS_CONFIG.region,
