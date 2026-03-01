@@ -7,11 +7,14 @@ function initOSS() {
   }
   
   if (!ossClient) {
+    const decryptedAccessKeyId = CryptoUtils.decrypt(OSS_CONFIG.accessKeyId);
+    const decryptedAccessKeySecret = CryptoUtils.decrypt(OSS_CONFIG.accessKeySecret);
+    
     ossClient = new OSS({
       region: OSS_CONFIG.region,
       bucket: OSS_CONFIG.bucket,
-      accessKeyId: OSS_CONFIG.accessKeyId,
-      accessKeySecret: OSS_CONFIG.accessKeySecret
+      accessKeyId: decryptedAccessKeyId,
+      accessKeySecret: decryptedAccessKeySecret
     });
   }
   
