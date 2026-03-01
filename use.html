@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>按摩券核销</title>
-    <link rel="stylesheet" href="style.css">
+    <title>恋爱卡核销</title>
+    <link rel="stylesheet" href="css/style.css">
     <style>
         .use-container {
             max-width: 500px;
@@ -182,12 +182,12 @@
         <div id="use-card" class="use-card" style="display: none;">
             <div class="use-icon">💆</div>
             <span class="status-badge available" id="status-badge">未使用</span>
-            <h1 class="use-title" id="coupon-title">按摩券</h1>
+            <h1 class="use-title" id="coupon-title">恋爱卡</h1>
             <div class="use-duration" id="coupon-duration">10分钟</div>
             
             <div class="use-info">
                 <div class="use-info-item">
-                    <span class="use-info-label">券编号</span>
+                    <span class="use-info-label">编号</span>
                     <span class="use-info-value" id="coupon-id">-</span>
                 </div>
                 <div class="use-info-item">
@@ -201,7 +201,7 @@
 
         <div id="used-card" class="use-card" style="display: none;">
             <div class="use-icon">✅</div>
-            <h1 class="use-title">按摩券已使用</h1>
+            <h1 class="use-title">已使用</h1>
             <div class="use-duration" id="used-duration">10分钟</div>
             <div class="use-info">
                 <div class="use-info-item">
@@ -209,21 +209,21 @@
                     <span class="use-info-value" id="used-date">-</span>
                 </div>
             </div>
-            <a href="index.html" class="back-link">返回首页</a>
+            <!-- <a href="index.html" class="back-link">返回首页</a> -->
         </div>
 
         <div id="error-card" class="use-card error-card" style="display: none;">
             <div class="error-icon">❌</div>
             <h1 class="error-title">出错了</h1>
             <p class="error-message" id="error-message">无效的按摩券</p>
-            <a href="index.html" class="back-link">返回首页</a>
+            <!-- <a href="index.html" class="back-link">返回首页</a> -->
         </div>
     </div>
 
     <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js"></script>
-    <script src="oss-config.js"></script>
-    <script src="crypto-utils.js"></script>
-    <script src="oss-utils.js"></script>
+    <script src="js/oss-config.js"></script>
+    <script src="js/crypto-utils.js"></script>
+    <script src="js/oss-utils.js"></script>
     <script>
         let currentCouponId = null;
 
@@ -234,7 +234,7 @@
             const couponId = parseInt(urlParams.get('id'));
             
             if (!couponId) {
-                showError('无效的按摩券链接');
+                showError('无效的链接');
                 return;
             }
 
@@ -245,7 +245,7 @@
                 const coupon = config.massageCoupons.find(c => c.id === couponId);
 
                 if (!coupon) {
-                    showError('找不到该按摩券');
+                    showError('无效的恋爱卡');
                     return;
                 }
 
@@ -303,7 +303,10 @@
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
-            return `${year}年${month}月${day}日`;
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         }
 
         init();

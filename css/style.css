@@ -715,22 +715,61 @@ body {
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     flex-wrap: wrap;
+}
+
+.pull-refresh-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px;
+    color: #8a7a8a;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.pull-refresh-indicator.pulling {
+    opacity: 1;
+}
+
+.pull-refresh-indicator.refreshing {
+    opacity: 1;
+    color: #ff69b4;
+}
+
+.pull-refresh-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.pull-refresh-indicator.pulling .pull-refresh-icon {
+    transform: rotate(180deg);
+}
+
+.pull-refresh-indicator.refreshing .pull-refresh-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .coupons-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 25px;
-    padding: 20px 0;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+    padding: 15px 0;
 }
 
 .coupon-card {
     background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 0;
-    box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+    box-shadow: 0 8px 20px rgba(255, 182, 193, 0.12);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 2px solid #ffe4ec;
     position: relative;
@@ -739,8 +778,8 @@ body {
 }
 
 .coupon-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(255, 182, 193, 0.35);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(255, 182, 193, 0.25);
 }
 
 .coupon-card.used {
@@ -751,42 +790,43 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 10px 15px;
     background: linear-gradient(135deg, #ffe4ec 0%, #fff0f5 100%);
     border-bottom: 1px solid #ffd1dc;
 }
 
 .coupon-number {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: #ff69b4;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 5px 12px;
-    border-radius: 15px;
-    letter-spacing: 1px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
 }
 
 .coupon-main {
     display: flex;
     align-items: center;
-    padding: 25px 20px;
-    gap: 15px;
+    padding: 18px 15px;
+    gap: 12px;
 }
 
 .coupon-icon {
-    font-size: 3.5rem;
+    font-size: 2.8rem;
     flex-shrink: 0;
 }
 
 .coupon-content {
     flex: 1;
+    min-width: 0;
 }
 
 .coupon-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: #5a4a5a;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .coupon-card.used .coupon-title {
@@ -795,17 +835,17 @@ body {
 
 .coupon-meta {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
 .coupon-duration {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: #ff69b4;
     font-weight: 700;
     background: linear-gradient(135deg, #ffe4ec 0%, #ffb6c1 100%);
-    padding: 6px 16px;
-    border-radius: 20px;
+    padding: 4px 12px;
+    border-radius: 16px;
 }
 
 .coupon-card.used .coupon-duration {
@@ -814,14 +854,14 @@ body {
 }
 
 .coupon-timeline {
-    padding: 0 20px 20px;
+    padding: 0 15px 15px;
 }
 
 .timeline-item {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 12px 0;
+    gap: 10px;
+    padding: 8px 0;
     border-bottom: 1px dashed #ffe4ec;
 }
 
@@ -834,46 +874,46 @@ body {
 }
 
 .timeline-dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: #e0e0e0;
     border: 2px solid #ccc;
     flex-shrink: 0;
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
 .timeline-dot.active {
     background: #90EE90;
     border-color: #32CD32;
-    box-shadow: 0 0 8px rgba(144, 238, 144, 0.6);
+    box-shadow: 0 0 6px rgba(144, 238, 144, 0.5);
 }
 
 .timeline-dot.used {
     background: #ff69b4;
     border-color: #ff1493;
-    box-shadow: 0 0 8px rgba(255, 105, 180, 0.6);
+    box-shadow: 0 0 6px rgba(255, 105, 180, 0.5);
 }
 
 .timeline-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .timeline-label {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: #8a7a8a;
     font-weight: 500;
 }
 
 .timeline-time {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     color: #5a4a5a;
     font-weight: 600;
     font-family: 'Courier New', monospace;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
 }
 
 .coupon-card.used .timeline-time {
@@ -881,9 +921,9 @@ body {
 }
 
 .coupon-status {
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.8rem;
     font-weight: 600;
     border: none;
     cursor: pointer;
@@ -893,12 +933,12 @@ body {
 .coupon-status.available {
     background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
     color: #fff;
-    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.35);
 }
 
 .coupon-status.available:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+    box-shadow: 0 5px 15px rgba(255, 105, 180, 0.45);
 }
 
 .coupon-status.available:active {
@@ -913,11 +953,11 @@ body {
 
 .coupon-stamp {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
-    width: 80px;
-    height: 80px;
-    border: 3px solid #ff69b4;
+    bottom: 15px;
+    right: 15px;
+    width: 65px;
+    height: 65px;
+    border: 2.5px solid #ff69b4;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -932,7 +972,7 @@ body {
 }
 
 .coupon-stamp-text {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #ff69b4;
     font-weight: 700;
     text-transform: uppercase;
@@ -961,15 +1001,6 @@ body {
     background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
     color: #fff;
     border-color: #ff69b4;
-}
-
-.refresh-btn {
-    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-    border-color: #a5d6a7;
-}
-
-.refresh-btn:hover {
-    border-color: #66bb6a;
 }
 
 .qr-modal {

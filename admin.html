@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>按摩券管理</title>
-    <link rel="stylesheet" href="style.css">
+    <title>恋爱卡管理</title>
+    <link rel="stylesheet" href="css/style.css">
     <style>
         .admin-container {
             max-width: 600px;
@@ -209,42 +209,147 @@
             color: #721c24;
             display: block;
         }
+
+        .coupon-list {
+            background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+            margin-top: 30px;
+        }
+
+        .coupon-list-title {
+            font-size: 1.2rem;
+            color: #5a4a5a;
+            margin-bottom: 20px;
+        }
+
+        .coupon-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 228, 236, 0.5);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .coupon-item:hover {
+            background: rgba(255, 228, 236, 0.8);
+            transform: translateX(5px);
+        }
+
+        .coupon-item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .coupon-item-icon {
+            font-size: 1.5rem;
+        }
+
+        .coupon-item-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coupon-item-title {
+            font-weight: 600;
+            color: #5a4a5a;
+        }
+
+        .coupon-item-meta {
+            font-size: 0.85rem;
+            color: #8a7a8a;
+        }
+
+        .coupon-item-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .coupon-item-status.available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .coupon-item-status.used {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .delete-btn {
+            padding: 8px 16px;
+            background: #ff6b6b;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .delete-btn:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+
+        .delete-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .coupon-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .empty-list {
+            text-align: center;
+            padding: 40px;
+            color: #8a7a8a;
+        }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <div class="login-card" id="login-card">
-            <h1 class="login-title">🔐 管理员登录</h1>
-            <input type="password" class="login-input" id="passcode-input" placeholder="请输入管理口令">
-            <button class="login-btn" id="login-btn">进入管理</button>
+            <h1 class="login-title">🔐 登录</h1>
+            <input type="password" class="login-input" id="passcode-input" placeholder="请输入口令">
+            <button class="login-btn" id="login-btn">进入</button>
             <p id="login-error" style="color: #ff69b4; margin-top: 15px; display: none;">口令错误，请重试</p>
         </div>
 
         <div class="admin-panel" id="admin-panel">
             <div class="admin-header">
-                <h1 class="admin-title">💆 按摩券管理</h1>
+                <h1 class="admin-title">💆 恋爱卡管理</h1>
                 <button class="logout-btn" id="logout-btn">退出</button>
             </div>
 
             <div class="message" id="message"></div>
 
             <div class="issue-card">
-                <h2 class="issue-title">发放新按摩券</h2>
+                <h2 class="issue-title">赠送恋爱卡</h2>
                 <div class="form-group">
-                    <label class="form-label">按摩时长</label>
+                    <label class="form-label">时长</label>
                     <select class="form-select" id="duration-select">
                         <option value="5">5 分钟</option>
                         <option value="10">10 分钟</option>
                         <option value="20">20 分钟</option>
-                        <option value="30">30 分钟</option>
-                        <option value="60">60 分钟</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">券标题（可选）</label>
-                    <input type="text" class="form-input" id="title-input" placeholder="默认：按摩券">
+                    <label class="form-label">标题</label>
+                    <input type="text" class="form-input" id="title-input" placeholder="默认：按摩卡">
                 </div>
-                <button class="issue-btn" id="issue-btn">发放按摩券</button>
+                <button class="issue-btn" id="issue-btn">赠送</button>
             </div>
 
             <div class="stats-card">
@@ -252,7 +357,7 @@
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-number" id="total-count">0</div>
-                        <div class="stat-label">总券数</div>
+                        <div class="stat-label">总数</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-number" id="available-count">0</div>
@@ -264,13 +369,20 @@
                     </div>
                 </div>
             </div>
+
+            <div class="coupon-list">
+                <h2 class="coupon-list-title">恋爱卡列表</h2>
+                <div id="coupon-list-container">
+                    <div class="empty-list">暂无恋爱卡</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js"></script>
-    <script src="oss-config.js"></script>
-    <script src="crypto-utils.js"></script>
-    <script src="oss-utils.js"></script>
+    <script src="js/oss-config.js"></script>
+    <script src="js/crypto-utils.js"></script>
+    <script src="js/oss-utils.js"></script>
     <script>
         let isLoggedIn = false;
 
@@ -322,18 +434,72 @@
                 document.getElementById('total-count').textContent = total;
                 document.getElementById('available-count').textContent = available;
                 document.getElementById('used-count').textContent = used;
+                
+                renderCouponList(coupons);
             } catch (error) {
                 showMessage('加载统计数据失败: ' + error.message, 'error');
             }
         }
 
+        function renderCouponList(coupons) {
+            const container = document.getElementById('coupon-list-container');
+            
+            if (coupons.length === 0) {
+                container.innerHTML = '<div class="empty-list">暂无数据</div>';
+                return;
+            }
+            
+            // 按 ID 倒序排列，最新的在前面
+            const sortedCoupons = [...coupons].sort((a, b) => b.id - a.id);
+            
+            container.innerHTML = sortedCoupons.map(coupon => `
+                <div class="coupon-item" data-coupon-id="${coupon.id}">
+                    <div class="coupon-item-info">
+                        <span class="coupon-item-icon">${coupon.icon}</span>
+                        <div class="coupon-item-details">
+                            <span class="coupon-item-title">${coupon.title} #${coupon.id}</span>
+                            <span class="coupon-item-meta">${coupon.duration}${coupon.durationUnit} · ${coupon.acquiredDate}</span>
+                        </div>
+                    </div>
+                    <div class="coupon-item-actions">
+                        <span class="coupon-item-status ${coupon.status}">${coupon.status === 'available' ? '未使用' : '已使用'}</span>
+                        <button class="delete-btn" onclick="handleDelete(${coupon.id})">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function handleDelete(couponId) {
+            if (!confirm(`确定要删除 #${couponId} 吗？此操作不可恢复。`)) {
+                return;
+            }
+            
+            const deleteBtn = document.querySelector(`[data-coupon-id="${couponId}"] .delete-btn`);
+            if (deleteBtn) {
+                deleteBtn.disabled = true;
+                deleteBtn.textContent = '删除中...';
+            }
+            
+            try {
+                await deleteMassageCoupon(couponId);
+                showMessage('删除成功', 'success');
+                loadStats();
+            } catch (error) {
+                showMessage('删除失败: ' + error.message, 'error');
+                if (deleteBtn) {
+                    deleteBtn.disabled = false;
+                    deleteBtn.textContent = '删除';
+                }
+            }
+        }
+
         async function handleIssue() {
             const duration = parseInt(document.getElementById('duration-select').value);
-            const title = document.getElementById('title-input').value || '按摩券';
+            const title = document.getElementById('title-input').value || '按摩卡';
             
             const issueBtn = document.getElementById('issue-btn');
             issueBtn.disabled = true;
-            issueBtn.textContent = '发放中...';
+            issueBtn.textContent = '赠送中...';
 
             try {
                 const coupon = {
@@ -344,14 +510,14 @@
                 };
                 
                 await addMassageCoupon(coupon);
-                showMessage(`按摩券发放成功！时长：${duration}分钟`, 'success');
+                showMessage(`${title}赠送成功！时长：${duration}分钟`, 'success');
                 document.getElementById('title-input').value = '';
                 loadStats();
             } catch (error) {
-                showMessage('发放失败: ' + error.message, 'error');
+                showMessage('赠送失败: ' + error.message, 'error');
             } finally {
                 issueBtn.disabled = false;
-                issueBtn.textContent = '发放按摩券';
+                issueBtn.textContent = '赠送';
             }
         }
 

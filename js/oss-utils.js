@@ -113,6 +113,26 @@ async function useMassageCoupon(couponId) {
   return coupon;
 }
 
+async function deleteMassageCoupon(couponId) {
+  const config = await loadConfigFromOSS();
+  
+  if (!config.massageCoupons) {
+    throw new Error('没有按摩券数据');
+  }
+  
+  const index = config.massageCoupons.findIndex(c => c.id === couponId);
+  
+  if (index === -1) {
+    throw new Error('找不到该按摩券');
+  }
+  
+  const deletedCoupon = config.massageCoupons[index];
+  config.massageCoupons.splice(index, 1);
+  
+  await saveConfigToOSS(config);
+  return deletedCoupon;
+}
+
 function verifyPasscode(inputPasscode) {
   return inputPasscode === OSS_CONFIG.adminPasscode;
 }

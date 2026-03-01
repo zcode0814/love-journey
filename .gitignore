@@ -4,3 +4,15 @@ node_modules/
 .env
 .env.local
 .oss-config.local.js
+
+# IDE
+.vscode/
+.idea/
+
+# 临时文件
+*.tmp
+*.swp
+*~
+
+# 系统文件
+Thumbs.db

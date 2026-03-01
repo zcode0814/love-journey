@@ -2,7 +2,7 @@
 
 ## 加密配置
 
-项目中的 `oss-config.js` 文件中的敏感信息（accessKeyId 和 accessKeySecret）已经过加密处理，避免被 GitHub 的安全扫描检测到。
+项目中的 `js/oss-config.js` 文件中的敏感信息（ak 和 sk）已经过加密处理，避免被 GitHub 的安全扫描检测到。
 
 ## 加密原理
 
@@ -62,14 +62,14 @@ console.log('accessKeySecret:', CryptoUtils.encrypt('你的AccessKeySecret'));
 
 ### 更新配置文件
 
-将生成的加密字符串复制到 `oss-config.js` 中：
+将生成的加密字符串复制到 `js/oss-config.js` 中：
 
 ```javascript
 const OSS_CONFIG = {
   region: 'oss-cn-beijing',
   bucket: 'your-bucket-name',
-  accessKeyId: '加密后的AccessKeyId',
-  accessKeySecret: '加密后的AccessKeySecret',
+  ak: '加密后的AccessKeyId',
+  sk: '加密后的AccessKeySecret',
   configPath: 'love-journey/config.json',
   adminPasscode: '0814'
 };

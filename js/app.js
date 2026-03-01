@@ -66,38 +66,21 @@ const cityCoordinates = {
 
 async function loadConfig() {
     try {
-        // 优先从 OSS 读取配置
-        if (typeof OSS_CONFIG !== 'undefined' && OSS_CONFIG.bucket !== 'your-bucket-name') {
-            console.log('从 OSS 加载配置...');
-            config = await loadConfigFromOSS();
-        } else {
-            console.log('从本地加载配置...');
-            const response = await fetch('config.json');
-            config = await response.json();
-        }
+        console.log('从 OSS 加载配置...');
+        config = await loadConfigFromOSS();
         
-        // 立即加载按摩券数据
+        // 立即加载数据
         if (config.massageCoupons) {
             massageCouponsData = config.massageCoupons;
-            console.log('按摩券数据已加载:', massageCouponsData.length, '张');
+            console.log('数据已加载:', massageCouponsData.length);
         } else {
-            console.log('配置中没有按摩券数据');
+            console.log('配置中没有数据');
         }
         
         initializeApp();
     } catch (error) {
-        console.error('加载配置文件失败:', error);
-        // 回退到本地配置
-        try {
-            const response = await fetch('config.json');
-            config = await response.json();
-            if (config.massageCoupons) {
-                massageCouponsData = config.massageCoupons;
-            }
-            initializeApp();
-        } catch (fallbackError) {
-            console.error('回退加载也失败:', fallbackError);
-        }
+        console.error('从 OSS 加载配置失败:', error);
+        alert('加载配置失败，请检查 OSS 配置是否正确');
     }
 }
 
@@ -220,7 +203,7 @@ function renderMilestones() {
         // <img src="${imageUrl}" alt="${milestone.title}" class="milestone-image" loading="lazy">
         card.innerHTML = `
             <div class="milestone-content">
-                <div class="milestone-date">${formatDate(milestone.date)}</div>
+                <div class="milestone-date">${formatDate(milestone.date, false)}</div>
                 <h3 class="milestone-title">${milestone.title}</h3>
                 <p class="milestone-description">${milestone.description}</p>
             </div>
@@ -285,7 +268,7 @@ async function initMap() {
     myChart = echarts.init(chartDom);
 
     try {
-        const response = await fetch('china-map.json');
+        const response = await fetch('assets/data/china-map.json');
         const geoJson = await response.json();
         
         echarts.registerMap('china', geoJson);
@@ -505,7 +488,7 @@ let currentFilter = 'all';
 let qrCodeInstance = null;
 
 function initTabs() {
-    const tabBtns = document.querySelectorAll('.tab-btn:not(.refresh-btn)');
+    const tabBtns = document.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
@@ -515,29 +498,158 @@ function initTabs() {
         });
     });
 
-    const refreshBtn = document.getElementById('refresh-btn');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', async () => {
-            refreshBtn.textContent = '🔄 刷新中...';
-            refreshBtn.disabled = true;
+    initPullRefresh();
+}
+
+function initPullRefresh() {
+    const container = document.getElementById('page-coupons');
+    const indicator = document.getElementById('pull-refresh-indicator');
+    
+    if (!container || !indicator) return;
+    
+    let startY = 0;
+    let currentY = 0;
+    let isPulling = false;
+    let isRefreshing = false;
+    const threshold = 80; // 下拉阈值
+    
+    container.addEventListener('touchstart', (e) => {
+        // 只有在页面顶部时才启用下拉刷新
+        if (container.scrollTop > 0) return;
+        
+        startY = e.touches[0].clientY;
+        isPulling = true;
+    }, { passive: true });
+    
+    container.addEventListener('touchmove', (e) => {
+        if (!isPulling || isRefreshing) return;
+        
+        currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+        
+        if (diff > 0 && diff < threshold * 2) {
+            indicator.style.transform = `translateY(${diff * 0.5}px)`;
+            
+            if (diff > threshold) {
+                indicator.classList.add('pulling');
+                indicator.querySelector('.pull-refresh-text').textContent = '释放刷新';
+            } else {
+                indicator.classList.remove('pulling');
+                indicator.querySelector('.pull-refresh-text').textContent = '下拉刷新';
+            }
+        }
+    }, { passive: true });
+    
+    container.addEventListener('touchend', async () => {
+        if (!isPulling || isRefreshing) return;
+        
+        isPulling = false;
+        const diff = currentY - startY;
+        
+        if (diff > threshold) {
+            // 触发刷新
+            isRefreshing = true;
+            indicator.classList.add('refreshing');
+            indicator.classList.remove('pulling');
+            indicator.querySelector('.pull-refresh-text').textContent = '刷新中...';
+            indicator.style.transform = 'translateY(0)';
             
             try {
                 await loadConfig();
                 renderCoupons();
-                refreshBtn.textContent = '🔄 已刷新';
-                setTimeout(() => {
-                    refreshBtn.textContent = '🔄 刷新';
-                    refreshBtn.disabled = false;
-                }, 1000);
+                indicator.querySelector('.pull-refresh-text').textContent = '刷新成功';
             } catch (error) {
-                refreshBtn.textContent = '🔄 刷新失败';
+                console.error('刷新失败:', error);
+                indicator.querySelector('.pull-refresh-text').textContent = '刷新失败';
+            } finally {
                 setTimeout(() => {
-                    refreshBtn.textContent = '🔄 刷新';
-                    refreshBtn.disabled = false;
+                    indicator.classList.remove('refreshing');
+                    indicator.querySelector('.pull-refresh-text').textContent = '下拉刷新';
+                    isRefreshing = false;
                 }, 1000);
             }
-        });
-    }
+        } else {
+            // 未达阈值，回弹
+            indicator.style.transform = 'translateY(0)';
+            indicator.classList.remove('pulling');
+        }
+        
+        startY = 0;
+        currentY = 0;
+    });
+    
+    // 桌面端鼠标事件支持
+    container.addEventListener('mousedown', (e) => {
+        if (container.scrollTop > 0) return;
+        
+        startY = e.clientY;
+        isPulling = true;
+    });
+    
+    container.addEventListener('mousemove', (e) => {
+        if (!isPulling || isRefreshing) return;
+        
+        currentY = e.clientY;
+        const diff = currentY - startY;
+        
+        if (diff > 0 && diff < threshold * 2) {
+            indicator.style.transform = `translateY(${diff * 0.5}px)`;
+            
+            if (diff > threshold) {
+                indicator.classList.add('pulling');
+                indicator.querySelector('.pull-refresh-text').textContent = '释放刷新';
+            } else {
+                indicator.classList.remove('pulling');
+                indicator.querySelector('.pull-refresh-text').textContent = '下拉刷新';
+            }
+        }
+    });
+    
+    container.addEventListener('mouseup', async () => {
+        if (!isPulling || isRefreshing) return;
+        
+        isPulling = false;
+        const diff = currentY - startY;
+        
+        if (diff > threshold) {
+            isRefreshing = true;
+            indicator.classList.add('refreshing');
+            indicator.classList.remove('pulling');
+            indicator.querySelector('.pull-refresh-text').textContent = '刷新中...';
+            indicator.style.transform = 'translateY(0)';
+            
+            try {
+                await loadConfig();
+                renderCoupons();
+                indicator.querySelector('.pull-refresh-text').textContent = '刷新成功';
+            } catch (error) {
+                console.error('刷新失败:', error);
+                indicator.querySelector('.pull-refresh-text').textContent = '刷新失败';
+            } finally {
+                setTimeout(() => {
+                    indicator.classList.remove('refreshing');
+                    indicator.querySelector('.pull-refresh-text').textContent = '下拉刷新';
+                    isRefreshing = false;
+                }, 1000);
+            }
+        } else {
+            indicator.style.transform = 'translateY(0)';
+            indicator.classList.remove('pulling');
+        }
+        
+        startY = 0;
+        currentY = 0;
+    });
+    
+    container.addEventListener('mouseleave', () => {
+        if (isPulling && !isRefreshing) {
+            isPulling = false;
+            indicator.style.transform = 'translateY(0)';
+            indicator.classList.remove('pulling');
+            startY = 0;
+            currentY = 0;
+        }
+    });
 }
 
 function initQRModal() {
@@ -565,9 +677,9 @@ function openQRModal(coupon) {
 
     qrCodeContainer.innerHTML = '';
 
-    // 校验券是否已被使用
+    // 校验是否已被使用
     if (coupon.status === 'used') {
-        alert('该按摩券已被使用，无法重复使用');
+        alert(`该${coupon.title}已被使用，无法重复使用`);
         return;
     }
 
@@ -612,14 +724,14 @@ function renderCoupons() {
     container.innerHTML = '';
 
     if (!massageCouponsData || massageCouponsData.length === 0) {
-        console.log('按摩券数据为空，尝试从配置加载');
+        console.log('数据为空，尝试从配置加载');
         if (config.massageCoupons) {
             massageCouponsData = config.massageCoupons;
         }
     }
 
     if (massageCouponsData.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">暂无按摩券数据</div>';
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">暂无数据</div>';
         return;
     }
 
@@ -629,9 +741,16 @@ function renderCoupons() {
     });
 
     if (filteredCoupons.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">该分类下暂无按摩券</div>';
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">该分类下暂无数据</div>';
         return;
     }
+
+    // 按获取时间降序排序（最新的在前面）
+    filteredCoupons.sort((a, b) => {
+        const dateA = new Date(a.acquiredDate.replace(/-/g, '/'));
+        const dateB = new Date(b.acquiredDate.replace(/-/g, '/'));
+        return dateB - dateA;
+    });
 
     filteredCoupons.forEach((coupon, index) => {
         const card = document.createElement('div');
@@ -691,7 +810,7 @@ function renderCoupons() {
             statusBtn.addEventListener('click', () => {
                 // 再次检查最新状态，防止并发问题
                 if (coupon.status === 'used') {
-                    alert('该按摩券已被使用，无法重复使用');
+                    alert(`该${coupon.title}已被使用，无法重复使用`);
                     return;
                 }
                 openQRModal(coupon);
